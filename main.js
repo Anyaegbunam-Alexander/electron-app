@@ -1,7 +1,7 @@
 const { app, BrowserWindow } = require("electron/main");
+const { Worker } = require('worker_threads');
 const path = require("node:path");
 require("./server/app");
-
 
 function createWindow() {
 	const win = new BrowserWindow({
@@ -10,13 +10,14 @@ function createWindow() {
 		webPreferences: {
 			preload: path.join(__dirname, "preload.js"),
 		},
-    });
-    win.loadURL("http://localhost:3459/home");
-
+	});
+	win.loadURL("http://localhost:3459/home");
 }
 
 app.whenReady().then(() => {
-    createWindow();
+	createWindow();
+
+	const worker = new Worker(path.join(__dirname, 'backgroundTask.js'));
 
 	app.on("activate", () => {
 		if (BrowserWindow.getAllWindows().length === 0) {
