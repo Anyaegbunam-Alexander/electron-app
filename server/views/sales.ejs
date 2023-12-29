@@ -1,0 +1,19 @@
+<h1>Sales</h1>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Date</th>
+      <th scope="col">Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% sales.forEach(function(sale) { %>
+      <tr>
+        <th scope="row"><%= sale.id %></th>
+        <td><a href="/sales/<%=sale.id %>"><%= sale.date %></a></td>
+        <td><%= sale.total_amount %></td>
+      </tr>
+    <% }); %>
+  </tbody>
+</table>

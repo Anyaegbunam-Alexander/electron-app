@@ -1,0 +1,25 @@
+<div class="container container-fluid">
+    <h1>Add Product</h1>
+
+    <form action="/products" method="post">
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name">
+        </div>
+        <div class="mb-3">
+            <label for="price" class="form-label">Price</label>
+            <input type="text" class="form-control" id="price" name="price">
+        </div>
+        <div class="mb-3">
+            <label for="quantity" class="form-label">Quantity</label>
+            <input type="number" class="form-control" id="quantity" name="quantity">
+        </div>
+        <div class="mb-3">
+            <label for="code" class="form-label">Code</label>
+            <input type="number" class="form-control" id="code" name="code">
+        </div>
+        <div class="mt-3">
+            <button type="submit" class="btn btn-success">Update</button>
+        </div>
+    </form>
+</div>

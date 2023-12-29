@@ -20,8 +20,5 @@ setInterval(() => {
 	// Your task goes here
 	var randInt = Math.floor(Math.random() * 8);
 	var name = names[randInt];
-	var about = `Lorem ${name}`;
-	const db = dbService.getDbServiceInstance();
-    db.insertNewName(name, about);
     console.log(`${name} inserted`)
-}, 20000); // Time is in milliseconds 20 secs
+}, 600000); // Time is in milliseconds 10 minutes

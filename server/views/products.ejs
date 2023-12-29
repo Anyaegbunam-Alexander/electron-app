@@ -1,0 +1,24 @@
+<h1>Products</h1>
+<a href="/products/add" class="btn btn-primary">Add Product</a>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Price</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Code</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% products.forEach(function(product) { %>
+      <tr>
+        <th scope="row"><%= product.id %></th>
+        <td><a href="/products/<%=product.id %>"><%= product.name %></a></td>
+        <td><%= product.price %></td>
+        <td><%= product.quantity %></td>
+        <td><%= product.code %></td>
+      </tr>
+    <% }); %>
+  </tbody>
+</table>

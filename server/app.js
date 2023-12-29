@@ -28,10 +28,7 @@ function getViewPath(viewName) {
 
 app.get("/home", async (request, response) => {
 	const db = dbService.getDbServiceInstance();
-	const result = await db.getNames();
-	let homeContent = await ejs.renderFile(getViewPath("home.ejs"), {
-		names: result,
-	});
+	let homeContent = await ejs.renderFile(getViewPath("home.ejs"));
 	response.render("base", {
 		body: homeContent,
 		success: request.flash("success"),
@@ -43,29 +40,90 @@ app.get("/about", async (request, response) => {
 	response.render("base", { body: aboutContent });
 });
 
-app.get("/form", async (request, response) => {
+app.get("/products", async (request, response) => {
 	const db = dbService.getDbServiceInstance();
-	let formContent = await ejs.renderFile(getViewPath("form.ejs"));
+	const result = await db.getProducts();
+	let productsContent = await ejs.renderFile(getViewPath("products.ejs"), {
+		products: result,
+	});
+	response.render("base", {
+		body: productsContent,
+		success: request.flash("success"),
+	});
+});
+
+app.post("/products", async (request, response) => {
+	const { name, code, price, quantity } = request.body;
+	const db = dbService.getDbServiceInstance();
+	const id = await db.insertNewProduct(name, code, price, quantity);
+	request.flash("success", "Product added!");
+	response.redirect(`/products/${id}`);
+});
+
+
+app.get("/products/add", async (request, response) => {
+	let formContent = await ejs.renderFile(getViewPath("add_product.ejs"));
 	response.render("base", { body: formContent });
 });
 
-app.post("/submit-form", (request, response) => {
-	const db = dbService.getDbServiceInstance();
-	const { name, about } = request.body;
-	const result = db.insertNewName(name, about);
-	request.flash("success", "Form submitted successfully!");
-	response.redirect("/home");
-});
-
-app.get("/user/:id", async (request, response) => {
+app.get("/products/:id", async (request, response) => {
 	const db = dbService.getDbServiceInstance();
 	const { id } = request.params;
-	const result = await db.getOneNameById(id);
-	let userContent = await ejs.renderFile(getViewPath("user.ejs"), {
-		user: result[0],
+	const result = await db.getOneProductById(id);
+	let productContent = await ejs.renderFile(getViewPath("one_product.ejs"), {
+		product: result[0],
 	});
 	response.render("base", {
-		body: userContent,
+		body: productContent,
+		success: request.flash("success"),
+	});
+});
+
+app.get("/products/:id/edit", async (request, response) => {
+	const db = dbService.getDbServiceInstance();
+	const { id } = request.params;
+	const result = await db.getOneProductById(id);
+	let productContent = await ejs.renderFile(getViewPath("edit_product.ejs"), {
+		product: result[0],
+	});
+	response.render("base", {
+		body: productContent,
+		success: request.flash("success"),
+	});
+});
+
+app.post("/products/:id/update", async (request, response) => {
+	const { id } = request.params;
+	const { name, price, quantity } = request.body;
+	const db = dbService.getDbServiceInstance();
+	await db.updateProductById(id, name, price, quantity);
+	request.flash("success", "Product updated!");
+	response.redirect(`/products/${id}/edit`);
+});
+
+app.get("/sales", async (request, response) => {
+	const db = dbService.getDbServiceInstance();
+	const sales = await db.getSales();
+	let salesContent = await ejs.renderFile(getViewPath("sales.ejs"), {
+		sales: sales,
+	});
+	response.render("base", {
+		body: salesContent,
+		success: request.flash("success"),
+	});
+});
+
+app.get("/sales/:id", async (request, response) => {
+	const db = dbService.getDbServiceInstance();
+	const { id } = request.params;
+	const sale = await db.getOneSaleById(id);
+	const sale_items = await db.getSaleItemsBySaleId(id);
+	let productContent = await ejs.renderFile(getViewPath("one_sale.ejs"), {
+		sale: sale[0],
+		sale_items: sale_items,
+	});
+	response.render("base", {
+		body: productContent,
 		success: request.flash("success"),
 	});
 });
