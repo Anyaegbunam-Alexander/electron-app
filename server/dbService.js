@@ -16,7 +16,13 @@ class DbService {
 			}
 		);
 	}
-
+	/*
+	To resolve the issue of creating a new database connection every time,
+	a new instance of DbService is created, the Singleton pattern is used.
+	This pattern restricts the instantiation of a class to a single
+	instance and provides a global point of access to it. Hence the need
+	for the getDbServiceInstance method.
+	*/
 	static getDbServiceInstance() {
 		return instance ? instance : new DbService();
 	}
@@ -108,7 +114,7 @@ class DbService {
 				sale_items.*, 
 				products.*
 				FROM sale_items
-				JOIN products ON sale_items.product = products.id
+				JOIN products ON sale_items.product_id = products.id
 				WHERE sale_items.sale_id = ?
 				`,
 				[id],
@@ -137,6 +143,60 @@ class DbService {
 				}
 			);
 		});
+	}
+
+	insertNewSale(date, total_amount = null) {
+		return new Promise((resolve, reject) => {
+			this.db.run(
+				"INSERT INTO sales (date, total_amount) VALUES (?, ?)",
+				[date, total_amount ? total_amount : 0],
+				function (err) {
+					if (err) {
+						reject(err);
+					} else {
+						resolve(this.lastID);
+					}
+				}
+			);
+		});
+	}
+
+	async insertSaleItems(sale_items, total_amount) {
+		const date = new Date();
+		try {
+			// add a new sale
+			const sale_id = await this.insertNewSale(date, total_amount);
+			return new Promise((resolve, reject) => {
+				// insert sale items
+				sale_items.forEach((element) => {
+					const { product_id, amount, quantity } = element;
+					this.db.run(
+						"INSERT INTO sale_items (sale_id, product_id, amount, quantity, date) VALUES (?, ?, ?, ?, ?)",
+						[sale_id, product_id, amount, quantity, date],
+						function (err) {
+							if (err) {
+								reject(err);
+							} else {
+								resolve(this.lastID);
+							}
+						}
+					);
+					// Update the quantity of the product
+					this.db.run(
+						"UPDATE products SET quantity = quantity - ? WHERE id = ?",
+						[quantity, product_id],
+						function (err) {
+							if (err) {
+								console.log(err);
+							}
+						}
+					);
+				});
+			});
+		} catch (err) {
+			console.log(err);
+			return;
+		}
 	}
 }
 module.exports = DbService;

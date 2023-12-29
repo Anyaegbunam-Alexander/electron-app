@@ -17,12 +17,12 @@ CREATE TABLE "sales" (
 CREATE TABLE "sale_items" (
 	"id"	INTEGER NOT NULL,
 	"sale_id"	INTEGER NOT NULL,
-	"product"	INTEGER,
+	"product_id"	INTEGER,
 	"amount"	REAL NOT NULL,
 	"quantity"	NUMERIC NOT NULL,
 	"date"	INTEGER NOT NULL,
 	FOREIGN KEY("sale_id") REFERENCES "sales"("id") ON DELETE CASCADE,
-	FOREIGN KEY("product") REFERENCES "products"("id"),
+	FOREIGN KEY("product_id") REFERENCES "products"("id"),
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
 

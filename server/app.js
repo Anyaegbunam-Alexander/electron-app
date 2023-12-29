@@ -60,7 +60,6 @@ app.post("/products", async (request, response) => {
 	response.redirect(`/products/${id}`);
 });
 
-
 app.get("/products/add", async (request, response) => {
 	let formContent = await ejs.renderFile(getViewPath("add_product.ejs"));
 	response.render("base", { body: formContent });
@@ -109,6 +108,46 @@ app.get("/sales", async (request, response) => {
 	});
 	response.render("base", {
 		body: salesContent,
+		success: request.flash("success"),
+	});
+});
+
+app.post("/sales", async (request, response) => {
+	const { product_id, amount, quantity } = request.body;
+	let sales = [];
+	let totalAmount = 0;
+	if (Array.isArray(product_id)) {
+		sales = product_id.map((id, index) => {
+			const floatAmount = parseFloat(amount[index])
+			totalAmount += floatAmount;
+			return {
+				product_id: parseInt(id, 10),
+				amount: floatAmount,
+				quantity: parseInt(quantity[index], 10),
+			};
+		});
+	} else {
+		totalAmount = amount;
+		sales.push({
+			product_id: parseInt(product_id, 10),
+			amount: parseFloat(amount),
+			quantity: parseInt(quantity, 10),
+		});
+	}
+	const db = dbService.getDbServiceInstance();
+	await db.insertSaleItems(sales, totalAmount);
+	request.flash("success", "Sale recorded!");
+	response.redirect(`/sales`);
+});
+
+app.get("/sales/add", async (request, response) => {
+	const db = dbService.getDbServiceInstance();
+	const products = await db.getProducts();
+	let addSaleContent = await ejs.renderFile(getViewPath("add_sale.ejs"), {
+		products: products,
+	});
+	response.render("base", {
+		body: addSaleContent,
 		success: request.flash("success"),
 	});
 });

@@ -21,7 +21,7 @@
         aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <a class="navbar-brand" href="#">Navbar</a>
+      <a class="navbar-brand" href="#">Ven3</a>
       <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
@@ -29,13 +29,14 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/products">Products</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="/sales">Sales</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/sales/add">Add Sales</a>
+          </li>
         </ul>
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
       </div>
     </div>
   </nav>
@@ -45,7 +46,9 @@
         <%= success %>
       </div>
     <% } %>
-    <%- body %>
+    <div class="mt-4 container-fluid">
+      <%- body %>
+    </div>
   </main>
 </body>
 
