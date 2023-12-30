@@ -2,6 +2,8 @@ const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 const dbPath = path.resolve(__dirname, "store.db");
 let instance = null;
+const inStore = "In Store"
+const inApp = "Ven3"
 
 class DbService {
 	constructor() {
@@ -25,6 +27,56 @@ class DbService {
 	*/
 	static getDbServiceInstance() {
 		return instance ? instance : new DbService();
+	}
+
+	getInfo() {
+		return new Promise((resolve, reject) => {
+			this.db.all("SELECT * FROM info WHERE id = ?", [1], (err, rows) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(rows);
+				}
+			});
+		});
+	}
+
+	setAppId(id) {
+		return new Promise((resolve, reject) => {
+			this.db.run(
+				`INSERT INTO info (id, store_id) 
+				VALUES (?, ?) 
+				ON CONFLICT(id) DO UPDATE SET store_id=excluded.store_id;
+				;`,
+				[1, id],
+				function (err) {
+					if (err) {
+						reject(err);
+					} else {
+						resolve(this.lastID);
+					}
+				}
+			);
+		});
+	}
+
+	setAccessKey(key) {
+		return new Promise((resolve, reject) => {
+			this.db.run(
+				"UPDATE info SET access_key = ? WHERE id = ?;",
+				[key, 1],
+				function (err) {
+					if (err) {
+						reject(err);
+						return false;
+					} else {
+						resolve(this.changes);
+						console.log(`Row(s) updated: ${this.changes}`);
+						return this.changes === 1 ? true : false;
+					}
+				}
+			);
+		});
 	}
 
 	getProducts() {
@@ -56,12 +108,13 @@ class DbService {
 		});
 	}
 
-	updateProductById(id, name, price, quantity) {
+	updateProductById(id, name, price, quantity, source = inStore) {
 		id = parseInt(id, 10);
+		const date = new Date();
 		return new Promise((resolve, reject) => {
 			this.db.run(
-				"UPDATE products SET name = ?, price = ?, quantity = ? WHERE id = ?",
-				[name, price, quantity, id],
+				"UPDATE products SET name = ?, price = ?, quantity = ?, modified = ?, source = ? WHERE id = ?",
+				[name, price, quantity, date, source, id],
 				function (err) {
 					if (err) {
 						reject(err);
@@ -110,7 +163,7 @@ class DbService {
 		return new Promise((resolve, reject) => {
 			this.db.all(
 				`SELECT sale_items.quantity AS sale_item_quantity, 
-				products.quantity AS product_quantity, 
+				products.quantity AS product_quantity,
 				sale_items.*, 
 				products.*
 				FROM sale_items
@@ -130,10 +183,11 @@ class DbService {
 	}
 
 	insertNewProduct(name, code, price, quantity) {
+		const date = new Date();
 		return new Promise((resolve, reject) => {
 			this.db.run(
-				"INSERT INTO products (name, code, price, quantity) VALUES (?, ?, ?, ?);",
-				[name, code, price, quantity],
+				"INSERT INTO products (name, code, price, quantity, created, modified, source) VALUES (?, ?, ?, ?, ?, ?, ?);",
+				[name, code, price, quantity, date, date, inStore],
 				function (err) {
 					if (err) {
 						reject(err);
@@ -148,8 +202,8 @@ class DbService {
 	insertNewSale(date, total_amount = null) {
 		return new Promise((resolve, reject) => {
 			this.db.run(
-				"INSERT INTO sales (date, total_amount) VALUES (?, ?)",
-				[date, total_amount ? total_amount : 0],
+				"INSERT INTO sales (date, total_amount, source) VALUES (?, ?, ?)",
+				[date, total_amount ? total_amount : 0, inStore],
 				function (err) {
 					if (err) {
 						reject(err);
@@ -171,8 +225,8 @@ class DbService {
 				sale_items.forEach((element) => {
 					const { product_id, amount, quantity } = element;
 					this.db.run(
-						"INSERT INTO sale_items (sale_id, product_id, amount, quantity, date) VALUES (?, ?, ?, ?, ?)",
-						[sale_id, product_id, amount, quantity, date],
+						"INSERT INTO sale_items (sale_id, product_id, amount, quantity, date, source) VALUES (?, ?, ?, ?, ?, ?)",
+						[sale_id, product_id, amount, quantity, date, inStore],
 						function (err) {
 							if (err) {
 								reject(err);
@@ -192,6 +246,7 @@ class DbService {
 						}
 					);
 				});
+				resolve(sale_id);
 			});
 		} catch (err) {
 			console.log(err);

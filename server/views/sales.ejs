@@ -5,6 +5,7 @@
       <th scope="col">#</th>
       <th scope="col">Date</th>
       <th scope="col">Amount</th>
+      <th scope="col">Source</th>
     </tr>
   </thead>
   <tbody>
@@ -13,6 +14,7 @@
         <th scope="row"><%= sale.id %></th>
         <td><a href="/sales/<%=sale.id %>"><%= new Date(sale.date).toLocaleString() %></a></td>
         <td><%= sale.total_amount.toLocaleString() %></td>
+        <td><%= sale.source %></td>
       </tr>
     <% }); %>
   </tbody>

@@ -1,6 +1,7 @@
 <h1>Sale</h1>
 <p>Date: <span class="fw-bold"><%= new Date(sale.date).toLocaleString() %></span></p>
 <p>Total Amount: <span class="fw-bold"><%= sale.total_amount.toLocaleString() %></span></p>
+<p>Source: <span class="fw-bold"><%= sale.source %></span></p>
 
 <h5>Sale Items</h5>
 <table class="table">
@@ -11,7 +12,7 @@
       <th scope="col">Amount</th>
       <th scope="col">Sale Quantity</th>
       <th scope="col">Product Price</th>
-      <th scope="col">Product Quantity</th>
+      <th scope="col">Left in Stock</th>
     </tr>
   </thead>
   <tbody>

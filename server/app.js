@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const electron = require("electron");
 const cors = require("cors");
 const path = require("path");
 const ejs = require("ejs");
@@ -7,6 +8,7 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const flash = require("connect-flash");
 const dbService = require("./dbService");
+const Operation = require("./operations").Operation;
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,7 +29,6 @@ function getViewPath(viewName) {
 }
 
 app.get("/home", async (request, response) => {
-	const db = dbService.getDbServiceInstance();
 	let homeContent = await ejs.renderFile(getViewPath("home.ejs"));
 	response.render("base", {
 		body: homeContent,
@@ -36,8 +37,33 @@ app.get("/home", async (request, response) => {
 });
 
 app.get("/about", async (request, response) => {
-	let aboutContent = await ejs.renderFile(getViewPath("about.ejs"));
-	response.render("base", { body: aboutContent });
+	let appVersion = electron.app.getVersion();
+	const db = dbService.getDbServiceInstance();
+	const info = await db.getInfo();
+	let aboutContent = await ejs.renderFile(getViewPath("about.ejs"), {
+		info: info ? info[0] : {},
+		appVersion: appVersion,
+	});
+	response.render("base", {
+		body: aboutContent,
+		success: request.flash("success"),
+		warning: request.flash("warning"),
+		danger: request.flash("danger"),
+	});
+});
+
+app.post("/register", async (request, response) => {
+	const { email, password } = request.body;
+	const success = new Operation({
+		email: email,
+		password: password,
+	}).requestRegistration();
+	if (success) {
+		request.flash("success", "Registration Successful!");
+	} else {
+		request.flash("danger", "Registration Unsuccessful!");
+	}
+	response.redirect("/about");
 });
 
 app.get("/products", async (request, response) => {
@@ -97,7 +123,7 @@ app.post("/products/:id/update", async (request, response) => {
 	const db = dbService.getDbServiceInstance();
 	await db.updateProductById(id, name, price, quantity);
 	request.flash("success", "Product updated!");
-	response.redirect(`/products/${id}/edit`);
+	response.redirect(`/products/${id}`);
 });
 
 app.get("/sales", async (request, response) => {
@@ -118,7 +144,7 @@ app.post("/sales", async (request, response) => {
 	let totalAmount = 0;
 	if (Array.isArray(product_id)) {
 		sales = product_id.map((id, index) => {
-			const floatAmount = parseFloat(amount[index])
+			const floatAmount = parseFloat(amount[index]);
 			totalAmount += floatAmount;
 			return {
 				product_id: parseInt(id, 10),
@@ -135,9 +161,9 @@ app.post("/sales", async (request, response) => {
 		});
 	}
 	const db = dbService.getDbServiceInstance();
-	await db.insertSaleItems(sales, totalAmount);
+	const sale_id = await db.insertSaleItems(sales, totalAmount);
 	request.flash("success", "Sale recorded!");
-	response.redirect(`/sales`);
+	response.redirect(`/sales/${sale_id}`);
 });
 
 app.get("/sales/add", async (request, response) => {

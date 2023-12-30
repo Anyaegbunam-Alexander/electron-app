@@ -1,1 +1,45 @@
-<h1>About</h1>
+<div class="text-center">
+    <h3>About</h3>
+    <p>Version: <span class="fw-bold"><%= appVersion %></span></p>
+    <% if (info) {%>
+        <p>Registration Successful</p>
+        <p>ID: <span class="fw-bold"><%= info.store_id %></span></p>
+    <% } else { %>
+        <p>Unregistered</p>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Request Registration
+        </button>
+        
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form action="/register" method="post">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Request app pegistration</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-header">
+                            <p class="fw-semibold fst-italic">Use the email and password used for your Ven3 app</p>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput1" class="form-label">Email address</label>
+                                <input type="email" class="form-control" name="email" id="exampleFormControlInput1" placeholder="name@example.com">
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput2" class="form-label">Password</label>
+                                <input type="password" class="form-control" name="password" id="exampleFormControlInput2">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    <% } %>
+</div>

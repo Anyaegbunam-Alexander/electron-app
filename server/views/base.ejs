@@ -36,6 +36,9 @@
           <li class="nav-item">
             <a class="nav-link" href="/sales/add">Add Sales</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/about">About</a>
+          </li>
         </ul>
       </div>
     </div>
@@ -46,10 +49,21 @@
         <%= success %>
       </div>
     <% } %>
+    <% if (locals.warning && warning.length > 0)  { %>
+      <div class="alert alert-warning">
+        <%= warning %>
+      </div>
+    <% } %>
+    <% if (locals.danger && danger.length > 0)  { %>
+      <div class="alert alert-danger">
+        <%= danger %>
+      </div>
+    <% } %>
     <div class="mt-4 container-fluid">
       <%- body %>
     </div>
-  </main>
+</main>
+
 </body>
 
 </html>

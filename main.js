@@ -11,7 +11,7 @@ function createWindow() {
 			preload: path.join(__dirname, "preload.js"),
 		},
 	});
-	win.loadURL("http://localhost:3459/sales/add");
+	win.loadURL("http://localhost:3459/home");
 }
 
 app.whenReady().then(() => {
