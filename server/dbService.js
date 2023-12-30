@@ -165,6 +165,8 @@ class DbService {
 			this.db.all(
 				`SELECT sale_items.quantity AS sale_item_quantity, 
 				products.quantity AS product_quantity,
+				sale_items.source AS sale_item_source,
+				products.source AS product_source,
 				sale_items.*, 
 				products.*
 				FROM sale_items

@@ -12,7 +12,7 @@ class Operation {
 	}
 
 	async parseOutgoingData() {
-		var outgoingData = {};
+		var outgoingData = [];
 		const db = dbService.getDbServiceInstance();
 		const info = await db.getInfo();
 		let timestamp;
@@ -22,8 +22,16 @@ class Operation {
 			timestamp = new Date();
 		}
 		const sales = await db.getSalesForPosting(timestamp);
-		console.log(timestamp);
-		console.log(sales);
+		
+		for (let element of sales) {
+			let sale_items = await db.getSaleItemsBySaleId(element.id);
+			outgoingData.push({
+				sale: element,
+				sale_items: sale_items
+			});
+		}
+		
+		console.log(JSON.stringify(outgoingData, null, 2));
 		return outgoingData;
 	}
 
