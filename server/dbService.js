@@ -2,8 +2,9 @@ const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 const dbPath = path.resolve(__dirname, "store.db");
 let instance = null;
-const inStore = "In Store"
-const inApp = "Ven3"
+const inStore = "In Store";
+const inApp = "Ven3";
+const infoId = 1;
 
 class DbService {
 	constructor() {
@@ -31,7 +32,7 @@ class DbService {
 
 	getInfo() {
 		return new Promise((resolve, reject) => {
-			this.db.all("SELECT * FROM info WHERE id = ?", [1], (err, rows) => {
+			this.db.all("SELECT * FROM info WHERE id = ?", [infoId], (err, rows) => {
 				if (err) {
 					reject(err);
 				} else {
@@ -48,7 +49,7 @@ class DbService {
 				VALUES (?, ?) 
 				ON CONFLICT(id) DO UPDATE SET store_id=excluded.store_id;
 				;`,
-				[1, id],
+				[infoId, id],
 				function (err) {
 					if (err) {
 						reject(err);
@@ -64,7 +65,7 @@ class DbService {
 		return new Promise((resolve, reject) => {
 			this.db.run(
 				"UPDATE info SET access_key = ? WHERE id = ?;",
-				[key, 1],
+				[key, infoId],
 				function (err) {
 					if (err) {
 						reject(err);
@@ -252,6 +253,22 @@ class DbService {
 			console.log(err);
 			return;
 		}
+	}
+
+	getSalesForPosting(timestamp) {
+		return new Promise((resolve, reject) => {
+			this.db.all(
+				"SELECT * FROM sales WHERE date > ?",
+				[timestamp],
+				(err, rows) => {
+					if (err) {
+						reject(err);
+					} else {
+						resolve(rows);
+					}
+				}
+			);
+		});
 	}
 }
 module.exports = DbService;

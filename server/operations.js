@@ -11,8 +11,19 @@ class Operation {
 		return parsedData;
 	}
 
-	parseOutgoingData() {
+	async parseOutgoingData() {
 		var outgoingData = {};
+		const db = dbService.getDbServiceInstance();
+		const info = await db.getInfo();
+		let timestamp;
+		if (info) {
+			timestamp = info[0].last_post;
+		} else {
+			timestamp = new Date();
+		}
+		const sales = await db.getSalesForPosting(timestamp);
+		console.log(timestamp);
+		console.log(sales);
 		return outgoingData;
 	}
 
