@@ -126,6 +126,15 @@ app.post("/products/:id/update", async (request, response) => {
 	response.redirect(`/products/${id}`);
 });
 
+app.post("/products/:id/code/", async (request, response) => {
+	const { id } = request.params;
+	const { code, server_id } = request.body;
+	const db = dbService.getDbServiceInstance();
+	await db.updateProductCodesById(id, code, server_id);
+	request.flash("success", "Product updated!");
+	response.redirect(`/products/${id}`);
+});
+
 app.get("/sales", async (request, response) => {
 	const db = dbService.getDbServiceInstance();
 	const sales = await db.getSales();

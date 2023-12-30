@@ -130,6 +130,43 @@ class DbService {
 		});
 	}
 
+	updateProductCodesById(id, code, server_id = null) {
+		id = parseInt(id, 10);
+		return new Promise((resolve, reject) => {
+			if (server_id === null || server_id === undefined || server_id === "") {
+				this.db.run(
+					"UPDATE products SET code = ? WHERE id = ?",
+					[code, id],
+					function (err) {
+						if (err) {
+							reject(err);
+							return false;
+						} else {
+							resolve(this.changes);
+							console.log(`Row(s) updated: ${this.changes}`);
+							return this.changes === 1 ? true : false;
+						}
+					}
+				);
+			} else {
+				this.db.run(
+					"UPDATE products SET code = ?, server_id = ? WHERE id = ?",
+					[code, server_id, id],
+					function (err) {
+						if (err) {
+							reject(err);
+							return false;
+						} else {
+							resolve(this.changes);
+							console.log(`Row(s) updated: ${this.changes}`);
+							return this.changes === 1 ? true : false;
+						}
+					}
+				);
+			}
+		});
+	}
+
 	getSales() {
 		return new Promise((resolve, reject) => {
 			this.db.all("SELECT * FROM sales", (err, rows) => {

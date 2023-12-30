@@ -5,5 +5,5 @@ const Operation = require("./server/operations").Operation;
 console.log("Background task started");
 setInterval(() => {
 	// Your task goes here
-	new Operation({}).parseOutgoingData();
+	// new Operation({}).parseOutgoingData();
 }, 6000); // Time is in milliseconds 10 minutes

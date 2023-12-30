@@ -7,6 +7,8 @@ CREATE TABLE "products" (
 	"created"	INTEGER NOT NULL,
 	"modified"	INTEGER NOT NULL,
 	"source"	TEXT,
+	"server_id"	TEXT,
+	"is_verified"	INTEGER NOT NULL DEFAULT 0,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
 
