@@ -309,5 +309,24 @@ class DbService {
 			);
 		});
 	}
+	
+	getProductsForPosting(timestamp) {
+		return new Promise((resolve, reject) => {
+			this.db.all(
+				"SELECT * FROM products WHERE modified > ?",
+				[timestamp],
+				(err, rows) => {
+					if (err) {
+						reject(err);
+					} else {
+						resolve(rows);
+					}
+				}
+			);
+		});
+	}
+
+	
 }
+
 module.exports = DbService;

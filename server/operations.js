@@ -13,24 +13,33 @@ class Operation {
 
 	async parseOutgoingData() {
 		var outgoingData = [];
+		var salesData = [];
 		const db = dbService.getDbServiceInstance();
 		const info = await db.getInfo();
 		let timestamp;
+		
 		if (info) {
 			timestamp = info[0].last_post;
 		} else {
 			timestamp = new Date();
 		}
-		const sales = await db.getSalesForPosting(timestamp);
 		
+		const sales = await db.getSalesForPosting(timestamp);
+		const products = await db.getProductsForPosting(timestamp);
+
 		for (let element of sales) {
 			let sale_items = await db.getSaleItemsBySaleId(element.id);
-			outgoingData.push({
+			salesData.push({
 				sale: element,
-				sale_items: sale_items
+				sale_items: sale_items,
 			});
 		}
-		
+
+		outgoingData.push({
+			sales: salesData,
+			products: products,
+		});
+
 		console.log(JSON.stringify(outgoingData, null, 2));
 		return outgoingData;
 	}
