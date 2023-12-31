@@ -7,8 +7,16 @@ const ejs = require("ejs");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const flash = require("connect-flash");
-const dbService = require("./dbService");
 const Operation = require("./operations").Operation;
+const { sequelize } = require("./db/connection.js");
+const {
+	Product,
+	Sale,
+	SaleItem,
+	Info,
+	inStore,
+	infoId,
+} = require("./db/models.js");
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -38,10 +46,9 @@ app.get("/home", async (request, response) => {
 
 app.get("/about", async (request, response) => {
 	let appVersion = electron.app.getVersion();
-	const db = dbService.getDbServiceInstance();
-	const info = await db.getInfo();
+	const info = await Info.findByPk(infoId);
 	let aboutContent = await ejs.renderFile(getViewPath("about.ejs"), {
-		info: info ? info[0] : {},
+		info: info,
 		appVersion: appVersion,
 	});
 	response.render("base", {
@@ -51,26 +58,29 @@ app.get("/about", async (request, response) => {
 		danger: request.flash("danger"),
 	});
 });
-
 app.post("/register", async (request, response) => {
 	const { email, password } = request.body;
-	const success = new Operation({
-		email: email,
-		password: password,
-	}).requestRegistration();
-	if (success) {
-		request.flash("success", "Registration Successful!");
-	} else {
+	try {
+		const success = await new Operation({
+			email: email,
+			password: password,
+		}).requestRegistration();
+		if (success) {
+			request.flash("success", "Registration Successful!");
+		} else {
+			request.flash("danger", "Registration Unsuccessful!");
+		}
+	} catch (error) {
+		console.log(error);
 		request.flash("danger", "Registration Unsuccessful!");
 	}
 	response.redirect("/about");
 });
 
 app.get("/products", async (request, response) => {
-	const db = dbService.getDbServiceInstance();
-	const result = await db.getProducts();
+	const products = await Product.findAll();
 	let productsContent = await ejs.renderFile(getViewPath("products.ejs"), {
-		products: result,
+		products: products,
 	});
 	response.render("base", {
 		body: productsContent,
@@ -80,10 +90,15 @@ app.get("/products", async (request, response) => {
 
 app.post("/products", async (request, response) => {
 	const { name, code, price, quantity } = request.body;
-	const db = dbService.getDbServiceInstance();
-	const id = await db.insertNewProduct(name, code, price, quantity);
+	const product = await Product.create({
+		name: name,
+		code: code,
+		price: price,
+		quantity: quantity,
+		source: inStore,
+	});
 	request.flash("success", "Product added!");
-	response.redirect(`/products/${id}`);
+	response.redirect(`/products/${product.id}`);
 });
 
 app.get("/products/add", async (request, response) => {
@@ -92,11 +107,10 @@ app.get("/products/add", async (request, response) => {
 });
 
 app.get("/products/:id", async (request, response) => {
-	const db = dbService.getDbServiceInstance();
 	const { id } = request.params;
-	const result = await db.getOneProductById(id);
+	const product = await Product.findByPk(id);
 	let productContent = await ejs.renderFile(getViewPath("one_product.ejs"), {
-		product: result[0],
+		product: product,
 	});
 	response.render("base", {
 		body: productContent,
@@ -105,11 +119,10 @@ app.get("/products/:id", async (request, response) => {
 });
 
 app.get("/products/:id/edit", async (request, response) => {
-	const db = dbService.getDbServiceInstance();
 	const { id } = request.params;
-	const result = await db.getOneProductById(id);
+	const product = await Product.findByPk(id);
 	let productContent = await ejs.renderFile(getViewPath("edit_product.ejs"), {
-		product: result[0],
+		product: product,
 	});
 	response.render("base", {
 		body: productContent,
@@ -120,8 +133,13 @@ app.get("/products/:id/edit", async (request, response) => {
 app.post("/products/:id/update", async (request, response) => {
 	const { id } = request.params;
 	const { name, price, quantity } = request.body;
-	const db = dbService.getDbServiceInstance();
-	await db.updateProductById(id, name, price, quantity);
+	const product = await Product.findByPk(id);
+	product.set({
+		name: name,
+		price: price,
+		quantity: quantity,
+	});
+	await product.save();
 	request.flash("success", "Product updated!");
 	response.redirect(`/products/${id}`);
 });
@@ -129,15 +147,18 @@ app.post("/products/:id/update", async (request, response) => {
 app.post("/products/:id/code/", async (request, response) => {
 	const { id } = request.params;
 	const { code, server_id } = request.body;
-	const db = dbService.getDbServiceInstance();
-	await db.updateProductCodesById(id, code, server_id);
+	const product = await Product.findByPk(id);
+	product.set({
+		code: code,
+		server_id: server_id,
+	});
+	await product.save();
 	request.flash("success", "Product updated!");
 	response.redirect(`/products/${id}`);
 });
 
 app.get("/sales", async (request, response) => {
-	const db = dbService.getDbServiceInstance();
-	const sales = await db.getSales();
+	const sales = await Sale.findAll();
 	let salesContent = await ejs.renderFile(getViewPath("sales.ejs"), {
 		sales: sales,
 	});
@@ -169,15 +190,27 @@ app.post("/sales", async (request, response) => {
 			quantity: parseInt(quantity, 10),
 		});
 	}
-	const db = dbService.getDbServiceInstance();
-	const sale_id = await db.insertSaleItems(sales, totalAmount);
+	const sale = await Sale.create({
+		total_amount: totalAmount,
+		source: inStore,
+	});
+
+	for (let element of sales) {
+		const { product_id, amount, quantity } = element;
+		await SaleItem.create({
+			sale_id: sale.id,
+			product_id: product_id,
+			quantity: quantity,
+			amount: amount,
+			source: inStore,
+		});
+	}
 	request.flash("success", "Sale recorded!");
-	response.redirect(`/sales/${sale_id}`);
+	response.redirect(`/sales/${sale.id}`);
 });
 
 app.get("/sales/add", async (request, response) => {
-	const db = dbService.getDbServiceInstance();
-	const products = await db.getProducts();
+	const products = await Product.findAll();
 	let addSaleContent = await ejs.renderFile(getViewPath("add_sale.ejs"), {
 		products: products,
 	});
@@ -188,19 +221,28 @@ app.get("/sales/add", async (request, response) => {
 });
 
 app.get("/sales/:id", async (request, response) => {
-	const db = dbService.getDbServiceInstance();
 	const { id } = request.params;
-	const sale = await db.getOneSaleById(id);
-	const sale_items = await db.getSaleItemsBySaleId(id);
+	const sale = await Sale.findByPk(id, {
+		include: [
+			{
+				model: SaleItem,
+				include: [Product],
+			},
+		],
+	});
 	let productContent = await ejs.renderFile(getViewPath("one_sale.ejs"), {
-		sale: sale[0],
-		sale_items: sale_items,
+		sale: sale,
 	});
 	response.render("base", {
 		body: productContent,
 		success: request.flash("success"),
 	});
 });
+
+sequelize.sync()
+  .then(() => {
+    console.log('Database & tables created!');
+  });
 
 app.listen(3459, () => {
 	console.log("app is running");

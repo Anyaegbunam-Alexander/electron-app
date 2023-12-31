@@ -12,7 +12,7 @@
     <% sales.forEach(function(sale) { %>
       <tr>
         <th scope="row"><%= sale.id %></th>
-        <td><a href="/sales/<%=sale.id %>"><%= new Date(sale.date).toLocaleString() %></a></td>
+        <td><a href="/sales/<%=sale.id %>"><%= new Date(sale.createdAt).toLocaleString() %></a></td>
         <td><%= sale.total_amount.toLocaleString() %></td>
         <td><%= sale.source %></td>
       </tr>

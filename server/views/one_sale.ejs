@@ -1,5 +1,5 @@
 <h1>Sale</h1>
-<p>Date: <span class="fw-bold"><%= new Date(sale.date).toLocaleString() %></span></p>
+<p>Date: <span class="fw-bold"><%= new Date(sale.createdAt).toLocaleString() %></span></p>
 <p>Total Amount: <span class="fw-bold"><%= sale.total_amount.toLocaleString() %></span></p>
 <p>Source: <span class="fw-bold"><%= sale.source %></span></p>
 
@@ -16,14 +16,14 @@
     </tr>
   </thead>
   <tbody>
-    <% sale_items.forEach(function(sale_item, index) { %>
+    <% sale.SaleItems.forEach(function(sale_item, index) { %>
       <tr>
         <th scope="row"><%= index + 1 %></th>
-        <td><%= sale_item.name %></td>
-        <td><%= sale_item.amount.toLocaleString() %></td>
-        <td><%= sale_item.sale_item_quantity %></td>
-        <td><%= sale_item.price.toLocaleString() %></td>
-        <td><%= sale_item.product_quantity %></td>
+        <td><%= sale_item.Product.name %></td>
+        <td><%= sale_item.amount %></td>
+        <td><%= sale_item.quantity %></td>
+        <td><%= sale_item.Product.price %></td>
+        <td><%= sale_item.Product.quantity %></td>
       </tr>
     <% }); %>
   </tbody>
