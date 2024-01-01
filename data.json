@@ -1,0 +1,138 @@
+{
+    "stock": [
+      {
+        "id": "036faf5f-e62e-4611-b229-0f240f744f16",
+        "object": "stock",
+        "created": "2023-12-28T22:26:44.062928Z",
+        "price": "1000.00",
+        "product": {
+          "id": "51360f7e-f752-42ff-83eb-9cf1b6bbba60",
+          "object": "product",
+          "brand": {
+            "id": "15ff3757-7085-4753-bc14-0d39be0840be",
+            "object": "brand",
+            "name": "Brand 1"
+          },
+          "category": {
+            "id": "a21b8a13-8f16-4e08-b62d-6abda5fc2e08",
+            "object": "category",
+            "name": "Category 1"
+          },
+          "code": "4471",
+          "description": "Test desc",
+          "image": "http://localhost:8000/media/product_images/rssagg.png",
+          "name": "Product 1",
+          "size": "12g"
+        },
+        "quantity": 0,
+        "store": "4cbcccda-66f9-4142-bb2f-fccb0a55bf2f"
+      },
+      {
+        "id": "6f452f87-95b8-4598-a5d3-5b6926b2d9f1",
+        "object": "stock",
+        "created": "2023-12-28T22:26:44.072928Z",
+        "price": "500.00",
+        "product": {
+          "id": "a29159f4-4b11-4f35-9316-a11d2703724b",
+          "object": "product",
+          "brand": {
+            "id": "15ff3757-7085-4753-bc14-0d39be0840be",
+            "object": "brand",
+            "name": "Brand 1"
+          },
+          "category": {
+            "id": "a21b8a13-8f16-4e08-b62d-6abda5fc2e08",
+            "object": "category",
+            "name": "Category 1"
+          },
+          "code": "217458",
+          "description": "Product 2",
+          "image": "http://localhost:8000/media/product_images/rssagg_APjORQ1.png",
+          "name": "Product 2",
+          "size": "120g"
+        },
+        "quantity": 0,
+        "store": "4cbcccda-66f9-4142-bb2f-fccb0a55bf2f"
+      }
+    ],
+    "sales": [
+      {
+        "id": "65206d2a-cd4d-4359-b5db-7ff3e533f16c",
+        "created": "2023-12-28T22:26:44.072928Z",
+        "object": "sale",
+        "sale_items": [
+          {
+            "id": "cb28aa0e-5e72-4f32-a9c5-545b2794fb8e",
+            "object": "saleitem",
+            "amount": "1000.00",
+            "order_item": null,
+            "quantity": 3,
+            "stock": {
+              "id": "036faf5f-e62e-4611-b229-0f240f744f16",
+              "object": "stock",
+              "created": "2023-12-28T22:26:44.062928Z",
+              "price": "1000.00",
+              "product": {
+                "id": "51360f7e-f752-42ff-83eb-9cf1b6bbba60",
+                "object": "product",
+                "brand": {
+                  "id": "15ff3757-7085-4753-bc14-0d39be0840be",
+                  "object": "brand",
+                  "name": "Brand 1"
+                },
+                "category": {
+                  "id": "a21b8a13-8f16-4e08-b62d-6abda5fc2e08",
+                  "object": "category",
+                  "name": "Category 1"
+                },
+                "code": "4471",
+                "description": "Test desc",
+                "image": "http://localhost:8000/media/product_images/rssagg.png",
+                "name": "Product 1",
+                "size": "12g"
+              },
+              "quantity": 0,
+              "store": "4cbcccda-66f9-4142-bb2f-fccb0a55bf2f"
+            }
+          },
+          {
+            "id": "41400db2-ec57-4a73-bd12-6aba1524178f",
+            "object": "saleitem",
+            "amount": "500.00",
+            "order_item": null,
+            "quantity": 4,
+            "stock": {
+              "id": "6f452f87-95b8-4598-a5d3-5b6926b2d9f1",
+              "object": "stock",
+              "created": "2023-12-28T22:26:44.072928Z",
+              "price": "500.00",
+              "product": {
+                "id": "a29159f4-4b11-4f35-9316-a11d2703724b",
+                "object": "product",
+                "brand": {
+                  "id": "15ff3757-7085-4753-bc14-0d39be0840be",
+                  "object": "brand",
+                  "name": "Brand 1"
+                },
+                "category": {
+                  "id": "a21b8a13-8f16-4e08-b62d-6abda5fc2e08",
+                  "object": "category",
+                  "name": "Category 1"
+                },
+                "code": "217458",
+                "description": "Product 2",
+                "image": "http://localhost:8000/media/product_images/rssagg_APjORQ1.png",
+                "name": "Product 2",
+                "size": "120g"
+              },
+              "quantity": 0,
+              "store": "4cbcccda-66f9-4142-bb2f-fccb0a55bf2f"
+            }
+          }
+        ],
+        "store": "4cbcccda-66f9-4142-bb2f-fccb0a55bf2f",
+        "total_amount": "1500.00"
+      }
+    ],
+    "access_key": "4c046b27-0234-4d08-883d-0d20c2bd0c81"
+  }

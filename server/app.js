@@ -61,10 +61,12 @@ app.get("/about", async (request, response) => {
 app.post("/register", async (request, response) => {
 	const { email, password } = request.body;
 	try {
-		const success = await new Operation({
+		const operation = await Operation.create()
+		const success = await operation.requestRegistration({
 			email: email,
-			password: password,
-		}).requestRegistration();
+			password: password
+		});
+
 		if (success) {
 			request.flash("success", "Registration Successful!");
 		} else {
@@ -239,10 +241,10 @@ app.get("/sales/:id", async (request, response) => {
 	});
 });
 
-sequelize.sync()
-  .then(() => {
-    console.log('Database & tables created!');
-  });
+// sequelize.sync()
+//   .then(() => {
+//     console.log('Database & tables created!');
+//   });
 
 app.listen(3459, () => {
 	console.log("app is running");

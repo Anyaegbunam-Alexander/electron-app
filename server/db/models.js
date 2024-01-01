@@ -21,8 +21,8 @@ const Product = sequelize.define("Product", {
 		unique: true,
 	},
 	is_verified: {
-		type: DataTypes.INTEGER,
-		defaultValue: 0,
+		type: DataTypes.BOOLEAN,
+		defaultValue: false,
 	},
 });
 
@@ -86,6 +86,10 @@ const Info = sequelize.define(
 		access_key: DataTypes.STRING,
 		last_get: DataTypes.DATE,
 		last_post: DataTypes.DATE,
+		is_registered: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: false,
+		},
 	},
 	{
 		timestamps: false,

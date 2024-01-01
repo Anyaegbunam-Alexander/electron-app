@@ -1,9 +1,13 @@
-const dbService = require("./server/dbService");
+// backgroundTask.js
 const Operation = require("./server/operations").Operation;
 
-// backgroundTask.js
+async function test() {
+	// const operation = await Operation.create();
+	// await operation.makeGetRequest();
+	console.log("Success!")
+}
+
 console.log("Background task started");
-setInterval(() => {
-	// Your task goes here
-	// new Operation({}).parseOutgoingData();
-}, 6000); // Time is in milliseconds 10 minutes
+setInterval(async () => {
+	await test();
+}, 60000); // Time is in milliseconds 10 minutes
