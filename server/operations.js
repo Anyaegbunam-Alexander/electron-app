@@ -20,7 +20,7 @@ class Operation {
 	}
 
 	async parseIncomingStockData(stock) {
-		console.log(JSON.stringify(stock));
+		console.log("stock:", JSON.stringify(stock));
 		try {
 			for (let element of stock) {
 				var { price, quantity, product, created, modified } = element;
@@ -70,7 +70,7 @@ class Operation {
 	}
 
 	async parseIncomingSalesData(sales) {
-		console.log(JSON.stringify(sales));
+		console.log("sales:", JSON.stringify(sales));
 		try {
 			for (let saleElement of sales) {
 				var { sale_items, total_amount, created } = saleElement;
@@ -85,6 +85,7 @@ class Operation {
 							server_id: saleItemElement.stock.product.id,
 						},
 					});
+
 					await SaleItem.create({
 						sale_id: sale.id,
 						product_id: productFromDB.id,
@@ -189,6 +190,7 @@ class Operation {
 		const data = await this.makeHttpRequest(url, "GET");
 
 		if (data) {
+			console.log(data)
 			const { stock, sales, access_key } = data;
 
 			this.info.access_key = access_key;
@@ -220,8 +222,6 @@ class Operation {
 			sales: sales,
 			stock: products,
 		};
-
-		console.log(body);
 
 		const data = await this.makeHttpRequest(url, "POST", body);
 
