@@ -1,4 +1,3 @@
-// server/db/models.js
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("./connection.js");
 const inStore = "In Store";
