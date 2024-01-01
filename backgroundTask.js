@@ -2,8 +2,8 @@
 const Operation = require("./server/operations").Operation;
 
 async function test() {
-	const operation = await Operation.create();
-	await operation.makeGetRequest();
+	// const operation = await Operation.create();
+	// await operation.makeGetRequest();
 	// console.log("Success!")
 }
 
