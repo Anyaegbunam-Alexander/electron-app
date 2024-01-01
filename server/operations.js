@@ -124,8 +124,7 @@ class Operation {
 		}
 
 		const sales = await Sale.findAll({ where, include });
-		const outgoingData = JSON.stringify(sales, null, 4);
-		return outgoingData;
+		return sales;
 	}
 
 	async parseOutgoingProductsData() {
@@ -143,8 +142,7 @@ class Operation {
 		}
 
 		const products = await Product.findAll({ where });
-		const outgoingData = JSON.stringify(products, null, 4);
-		return outgoingData;
+		return products;
 	}
 
 	async makeHttpRequest(url, method, body, allow_null_info = false) {
@@ -166,7 +164,7 @@ class Operation {
 					Authorization: `AccessKey ${access_key}`,
 				},
 				method: method,
-				body: body ? JSON.stringify(body) : undefined,
+				body: body ? JSON.stringify(body, null, 4) : undefined,
 			});
 
 			if (!response.ok) {
@@ -223,7 +221,7 @@ class Operation {
 			stock: products,
 		};
 
-		console.log(body)
+		console.log(body);
 
 		const data = await this.makeHttpRequest(url, "POST", body);
 
