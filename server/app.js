@@ -250,8 +250,11 @@ app.get("/sales/:id", async (request, response) => {
     //     console.log('Database & tables created!');
   //   });
 
-app.listen(3459, () => {
+let server = app.listen(3459, () => {
 	console.log("app is running");
 });
 
-exports.expressApp = app;
+
+
+exports.expressServer = server;
+exports.sequelize = sequelize;

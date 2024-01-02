@@ -5,6 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon --exec electron .",
+    "elect": "electron .",
     "package": "electron-packager . --platform=win32 --arch=x64"
   },
   "dependencies": {

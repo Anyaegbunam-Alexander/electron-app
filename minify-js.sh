@@ -2,7 +2,7 @@
 
 find ./server/ -name "*.js" -exec sh -c '
   for file do
-    uglifyjs "$file" --compress --mangle -o "${file%.js}.min.js"
+    uglifyjs "$file" --compress --mangle -o "$file"
     echo "Minified: $file"
   done
 ' sh {} +
