@@ -1,3 +1,7 @@
+/*!--------------------------------------------------------
+ * Copyright (C) Alexander Anyaegbunam. All rights reserved.
+ *--------------------------------------------------------*/
+
 const {
 	Product,
 	Sale,

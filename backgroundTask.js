@@ -1,3 +1,7 @@
+/*!--------------------------------------------------------
+ * Copyright (C) Alexander Anyaegbunam. All rights reserved.
+ *--------------------------------------------------------*/
+
 // backgroundTask.js
 const Operation = require("./server/operations").Operation;
 

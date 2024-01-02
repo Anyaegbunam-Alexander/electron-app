@@ -1,3 +1,7 @@
+/*!--------------------------------------------------------
+ * Copyright (C) Alexander Anyaegbunam. All rights reserved.
+ *--------------------------------------------------------*/
+
 const { Sequelize } = require("sequelize");
 const path = require("path");
 const sequelize = new Sequelize({

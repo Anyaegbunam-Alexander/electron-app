@@ -1,3 +1,7 @@
+/*!--------------------------------------------------------
+ * Copyright (C) Alexander Anyaegbunam. All rights reserved.
+ *--------------------------------------------------------*/
+
 const express = require("express");
 const app = express();
 const electron = require("electron");

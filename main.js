@@ -1,5 +1,9 @@
+/*!--------------------------------------------------------
+ * Copyright (C) Alexander Anyaegbunam. All rights reserved.
+ *--------------------------------------------------------*/
+
 const { app, BrowserWindow } = require("electron/main");
-const { Worker } = require('worker_threads');
+const { Worker } = require("worker_threads");
 const path = require("node:path");
 require("./server/app");
 
@@ -17,7 +21,7 @@ function createWindow() {
 app.whenReady().then(() => {
 	createWindow();
 
-	const worker = new Worker(path.join(__dirname, 'backgroundTask.js'));
+	const worker = new Worker(path.join(__dirname, "backgroundTask.js"));
 
 	app.on("activate", () => {
 		if (BrowserWindow.getAllWindows().length === 0) {

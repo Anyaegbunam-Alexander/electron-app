@@ -1,3 +1,7 @@
+/*!--------------------------------------------------------
+ * Copyright (C) Alexander Anyaegbunam. All rights reserved.
+ *--------------------------------------------------------*/
+
 function isArrowKey(event) {
 	// Allow arrow keys (37-40) and backspace (8)
 	if ((event.keyCode >= 37 && event.keyCode <= 40) || event.keyCode === 8) {
