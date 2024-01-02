@@ -6,3 +6,6 @@ find ./server/ -name "*.js" -exec sh -c '
     echo "Minified: $file"
   done
 ' sh {} +
+
+uglifyjs main.js --compress --mangle -o main.js
+uglifyjs backgroundTask.js --compress --mangle -o backgroundTask.js
